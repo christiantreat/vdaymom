@@ -18,6 +18,7 @@
             background: #8B0000;
             overflow: hidden;
             position: relative;
+            touch-action: none;
         }
 
         .hearts-container {
@@ -28,6 +29,58 @@
             height: 100vh;
             pointer-events: none;
             z-index: 1;
+        }
+
+        .glitter-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .glitter {
+            position: absolute;
+            pointer-events: none;
+            background: transparent;
+            animation: sparkle 1s linear forwards;
+        }
+
+        .glitter::before, .glitter::after {
+            content: '✦';
+            position: absolute;
+            animation: spin 1s linear infinite;
+        }
+
+        .glitter::before {
+            color: #FFD700;
+        }
+
+        .glitter::after {
+            color: #FFF;
+            animation-delay: -0.5s;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .card {
@@ -43,6 +96,7 @@
             z-index: 2;
         }
 
+        /* Previous styles remain the same */
         .lace-border {
             position: absolute;
             top: 0;
@@ -100,6 +154,7 @@
             transform-origin: center;
         }
 
+        /* Previous animations remain the same */
         @keyframes float {
             0%, 100% {
                 transform: translateY(0) rotate(0deg);
@@ -152,6 +207,7 @@
 </head>
 <body>
     <div class="hearts-container" id="hearts"></div>
+    <div class="glitter-container" id="glitter"></div>
     <div class="card">
         <div class="lace-border"></div>
         <div class="side-border-left">❦<br>❦<br>❦<br>❦<br>❦</div>
@@ -167,16 +223,15 @@
             '💗', '💓', '💕', '💖', '💘', '💝', '💞', '💟'
         ];
 
+        const glitterSymbols = ['✦', '✧', '✭', '✮', '✯', '✰'];
+
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('ascii-heart');
             heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
             
-            // Random position along x-axis
             const xPos = Math.random() * 100;
-            // Random duration between 4 and 8 seconds
             const duration = 4 + Math.random() * 4;
-            // Random delay before starting
             const delay = Math.random() * 2;
             
             heart.style.setProperty('--float-x', `${xPos}vw`);
@@ -189,6 +244,42 @@
                 heart.remove();
             }, (duration + delay) * 1000);
         }
+
+        function createGlitter(x, y) {
+            const glitterCount = 6;
+            for (let i = 0; i < glitterCount; i++) {
+                const glitter = document.createElement('div');
+                glitter.classList.add('glitter');
+                
+                // Random position within a small radius of the touch point
+                const angle = (Math.PI * 2 * i) / glitterCount;
+                const radius = Math.random() * 30;
+                const offsetX = Math.cos(angle) * radius;
+                const offsetY = Math.sin(angle) * radius;
+                
+                glitter.style.left = (x + offsetX) + 'px';
+                glitter.style.top = (y + offsetY) + 'px';
+                glitter.style.fontSize = (12 + Math.random() * 8) + 'px';
+                
+                document.getElementById('glitter').appendChild(glitter);
+
+                setTimeout(() => {
+                    glitter.remove();
+                }, 1000);
+            }
+        }
+
+        // Handle both mouse and touch events
+        function handleInteraction(e) {
+            const x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const y = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            createGlitter(x, y);
+        }
+
+        // Event listeners for mouse and touch
+        document.addEventListener('mousemove', handleInteraction);
+        document.addEventListener('touchmove', handleInteraction);
+        document.addEventListener('touchstart', handleInteraction);
 
         // Create initial hearts
         for (let i = 0; i < 20; i++) {
