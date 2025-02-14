@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Valentine's Day Mom!</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #8B0000;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .card {
+            position: relative;
+            text-align: center;
+            padding: 3.5rem;
+            width: 85vw;
+            max-width: 400px;
+            border-radius: 15px;
+            background: #FFF5F5;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: float 6s ease-in-out infinite;
+            z-index: 2;
+        }
+
+        .lace-border {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            border: 2px solid #8B0000;
+            border-radius: 15px;
+        }
+
+        .lace-border::before {
+            content: '❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #8B0000;
+            font-size: 14px;
+            white-space: nowrap;
+            letter-spacing: 2px;
+        }
+
+        .lace-border::after {
+            content: '❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦ ❦';
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #8B0000;
+            font-size: 14px;
+            white-space: nowrap;
+            letter-spacing: 2px;
+        }
+
+        .message {
+            font-family: 'Playfair Display', serif;
+            color: #8B0000;
+            text-shadow: 1px 1px 2px rgba(139, 0, 0, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+            margin: 0.5rem 0;
+            letter-spacing: 0.5px;
+        }
+
+        .ascii-heart {
+            position: absolute;
+            color: #8B0000;
+            font-size: 24px;
+            opacity: 0;
+            animation: heartFloat var(--float-duration) linear infinite;
+            animation-delay: var(--float-delay);
+            left: var(--float-x);
+            transform-origin: center;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-10px) rotate(1deg);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-20vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .side-border-left, .side-border-right {
+            position: absolute;
+            top: 30px;
+            bottom: 30px;
+            width: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            color: #8B0000;
+            font-size: 14px;
+        }
+
+        .side-border-left {
+            left: 10px;
+        }
+
+        .side-border-right {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-container" id="hearts"></div>
+    <div class="card">
+        <div class="lace-border"></div>
+        <div class="side-border-left">❦<br>❦<br>❦<br>❦<br>❦</div>
+        <div class="side-border-right">❦<br>❦<br>❦<br>❦<br>❦</div>
+        <h1 class="message text-4xl">Happy Valentine's Day</h1>
+        <h2 class="message text-6xl">Mom!</h2>
+        <p class="message text-3xl">I Love You</p>
+    </div>
+
+    <script>
+        const heartSymbols = [
+            '♥', '♡', '❤', '❥', '❣', '❦', '❧',
+            '💗', '💓', '💕', '💖', '💘', '💝', '💞', '💟'
+        ];
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('ascii-heart');
+            heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+            
+            // Random position along x-axis
+            const xPos = Math.random() * 100;
+            // Random duration between 4 and 8 seconds
+            const duration = 4 + Math.random() * 4;
+            // Random delay before starting
+            const delay = Math.random() * 2;
+            
+            heart.style.setProperty('--float-x', `${xPos}vw`);
+            heart.style.setProperty('--float-duration', `${duration}s`);
+            heart.style.setProperty('--float-delay', `-${delay}s`);
+            
+            document.getElementById('hearts').appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, (duration + delay) * 1000);
+        }
+
+        // Create initial hearts
+        for (let i = 0; i < 20; i++) {
+            createHeart();
+        }
+
+        // Continue creating hearts
+        setInterval(createHeart, 300);
+    </script>
+</body>
+</html>
